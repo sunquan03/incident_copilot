@@ -175,7 +175,7 @@ CREATE TRIGGER trg_incidents_updated_at
 
 
 CREATE TABLE IF NOT EXISTS event_outbox (
-    id                  TEXT PRIMARY KEY,
+    id                  BIGSERIAL PRIMARY KEY,
     aggregate_type      TEXT NOT NULL,
     aggregate_id        TEXT NOT NULL,
     event_type          TEXT NOT NULL,
