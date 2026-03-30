@@ -95,15 +95,13 @@ func (p *producer) drain() {
 			if !ok {
 				return
 			}
-			log.Printf("[kafka] delivered: topic=%s partition=%d offset=%d",
-				msg.Topic, msg.Partition, msg.Offset)
+			log.Printf("[kafka] delivered: topic=%s partition=%d offset=%d", msg.Topic, msg.Partition, msg.Offset)
 
 		case err, ok := <-p.ap.Errors():
 			if !ok {
 				return
 			}
-			log.Printf("[kafka] delivery failed: topic=%s err=%v",
-				err.Msg.Topic, err.Err)
+			log.Printf("[kafka] delivery failed: topic=%s err=%v", err.Msg.Topic, err.Err)
 		}
 	}
 }
@@ -120,7 +118,7 @@ func (p *producer) SendMessage(topic string, key string, message []byte) error {
 	case p.ap.Input() <- &msg:
 		return nil
 	case <-p.closeCh:
-		return fmt.Errorf("kafka producer closed")
+		return fmt.Errorf("[kafka] producer closed")
 	}
 
 }
