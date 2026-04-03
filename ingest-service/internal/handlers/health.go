@@ -2,6 +2,9 @@ package handlers
 
 import (
 	"context"
+	"encoding/json"
+	"net/http"
+	"runtime"
 	"time"
 
 	"github.com/IBM/sarama"
@@ -60,5 +63,34 @@ func (h *HealthHandler) checkPostgres() models.ComponentHealth {
 
 // api/v1/health
 func (h *HealthHandler) HandleHealth(reqCtx *fasthttp.RequestCtx) {
+	components := map[string]models.ComponentHealth{
+		"postgres": h.checkPostgres(),
+		"kafka":    h.checkKafka(),
+	}
 
+	status := models.StatusUp
+	for _, component := range components {
+		if component.Status == models.StatusDown {
+			status = models.StatusDown
+		}
+	}
+
+	var memoryStats runtime.MemStats
+	runtime.ReadMemStats(&memoryStats)
+
+	resp := models.HealthResponse{
+		Status:     status,
+		Components: components,
+	}
+
+	statusCode := http.StatusOK
+	if status != models.StatusUp {
+		statusCode = http.StatusServiceUnavailable
+	}
+
+	reqCtx.SetContentType("application/json")
+	reqCtx.SetStatusCode(statusCode)
+	if err := json.NewEncoder(reqCtx).Encode(resp); err != nil {
+		reqCtx.Error("Ineternal server error", fasthttp.StatusInternalServerError)
+	}
 }

@@ -14,8 +14,8 @@ type ComponentHealth struct {
 }
 
 type HealthResponse struct {
-	Status     HealthStatus      `json:"status"`
-	Uptime     string            `json:"uptime"`
-	Version    string            `json:"version"`
-	Components []ComponentHealth `json:"components"`
+	Status     HealthStatus               `json:"status"`
+	Uptime     string                     `json:"uptime"`
+	Version    string                     `json:"version"`
+	Components map[string]ComponentHealth `json:"components"`
 }
