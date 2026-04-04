@@ -14,8 +14,8 @@ type Service struct {
 	producer brokers.Producer
 }
 
-func NewService(repo *repositories.Repository, producer brokers.Producer) Service {
-	return Service{repo: repo, producer: producer}
+func NewService(repo *repositories.Repository, producer brokers.Producer) *Service {
+	return &Service{repo: repo, producer: producer}
 }
 
 func (s *Service) CreateIncident(ctx context.Context, inc *models.Incident) error {

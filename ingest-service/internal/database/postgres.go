@@ -14,7 +14,7 @@ type DB struct {
 	pool *pgxpool.Pool
 }
 
-func New(ctx context.Context, connectionString string) (*DB, error) {
+func NewDB(ctx context.Context, connectionString string) (*DB, error) {
 	poolCfg, err := pgxpool.ParseConfig(connectionString)
 	if err != nil {
 		return nil, err
