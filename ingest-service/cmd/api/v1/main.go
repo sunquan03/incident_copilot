@@ -33,7 +33,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	db, err := database.NewDB(context.Background(), "")
+	db, err := database.NewDB(context.Background(), cfg.Postgres.ConnectionString)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -51,6 +51,10 @@ func main() {
 		ReadTimeout:  7 * time.Second,
 		IdleTimeout:  7 * time.Second,
 	}
-
-	server.ListenAndServe(fmt.Sprintf("%s:%s", cfg.Server.Host, cfg.Server.Port))
+	addr := fmt.Sprintf("%s:%s", cfg.Server.Host, cfg.Server.Port)
+	log.Printf("Listening on %s", addr)
+	err = server.ListenAndServe(addr)
+	if err != nil {
+		log.Fatal(err)
+	}
 }

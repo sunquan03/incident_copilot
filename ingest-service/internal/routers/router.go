@@ -22,6 +22,7 @@ func NewRouter(reqHandler *handlers.Handler, healthHandler *handlers.HealthHandl
 }
 
 func (r *Router) Setup() fasthttp.RequestHandler {
+
 	apiV1 := r.router.Group("/api/v1")
 	apiV1.POST("/alert", r.reqHandler.HandleAlert)
 	apiV1.POST("/logdoc", r.reqHandler.HandleLogDoc)

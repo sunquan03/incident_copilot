@@ -35,6 +35,7 @@ func (h *Handler) HandleAlert(reqCtx *fasthttp.RequestCtx) {
 	err := h.service.CreateAlert(ctx, &req)
 	if err != nil {
 		h.sendError(reqCtx, fasthttp.StatusInternalServerError, err)
+		return
 	}
 
 	reqCtx.Response.Header.SetContentType("application/json")
@@ -57,6 +58,7 @@ func (h *Handler) HandleLogDoc(reqCtx *fasthttp.RequestCtx) {
 	err := h.service.CreateLogDoc(ctx, &req)
 	if err != nil {
 		h.sendError(reqCtx, fasthttp.StatusInternalServerError, err)
+		return
 	}
 
 	reqCtx.Response.Header.SetContentType("application/json")
@@ -79,6 +81,7 @@ func (h *Handler) HandleIncident(reqCtx *fasthttp.RequestCtx) {
 	err := h.service.CreateIncident(ctx, &req)
 	if err != nil {
 		h.sendError(reqCtx, fasthttp.StatusInternalServerError, err)
+		return
 	}
 
 	reqCtx.Response.Header.SetContentType("application/json")

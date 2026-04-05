@@ -77,6 +77,7 @@ func NewProducer(cfg ProducerConfig) (Producer, error) {
 
 	p := &producer{
 		ap:      ap,
+		wg:      &sync.WaitGroup{},
 		closeCh: make(chan struct{}),
 	}
 

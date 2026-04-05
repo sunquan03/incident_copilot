@@ -40,9 +40,9 @@ func (repo *Repository) CreateAlert(ctx context.Context, id string, alert *model
 	if err != nil {
 		return err
 	}
-	query := `INSERT INTO alerts (id, source_id, source_name, message, created_at) 
-			  VALUES (?, ?, ?, ?, ?)`
-	_, err = tx.ExecContext(ctx, query, id, alert.SourceID, alert.SourceName, alert.Message, alert.CreatedAt)
+	query := `INSERT INTO alerts (id, source_id, source_name, message, created_at, dedupe_key) 
+			  VALUES ($1, $2, $3, $4, $5, $6)`
+	_, err = tx.ExecContext(ctx, query, id, alert.SourceID, alert.SourceName, alert.Message, alert.CreatedAt, alert.SourceID)
 	if err != nil {
 		tx.Rollback()
 		return err
@@ -53,16 +53,16 @@ func (repo *Repository) CreateAlert(ctx context.Context, id string, alert *model
 }
 
 func (repo *Repository) CreateLogDoc(ctx context.Context, id string, logdoc *models.LogDoc) error {
-	query := `INSERT INTO log_docs (id, source_id, source_name, title, content, created_at)
-			  VALUES (?, ?, ?, ?, ?, ?)`
-	_, err := repo.db.Exec(query, id, logdoc.SourceID, logdoc.ServiceName, logdoc.Title, logdoc.Content, logdoc.CreatedAt)
+	query := `INSERT INTO log_docs (id, source_id, source_name, title, content, source_type, status, created_at, dedupe_key)
+			  VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`
+	_, err := repo.db.Exec(query, id, logdoc.SourceID, logdoc.ServiceName, logdoc.Title, logdoc.Content, logdoc.SourceType, logdoc.Status, logdoc.CreatedAt, logdoc.SourceID)
 
 	return err
 }
 
 func (repo *Repository) CreateIncident(ctx context.Context, id string, inc *models.Incident) error {
-	query := `INSERT INTO incidents (id, source_id, source_name, message, created_at)
-			  VALUES (?, ?, ?, ?, ?)`
-	_, err := repo.db.Exec(query, id, inc.SourceID, inc.ServiceName, inc.Message, inc.CreatedAt)
+	query := `INSERT INTO incidents (id, source_id, source_name, message, status, created_at, dedupe_key)
+			  VALUES ($1, $2, $3, $4, $5, $6, $7)`
+	_, err := repo.db.Exec(query, id, inc.SourceID, inc.ServiceName, inc.Message, inc.Status, inc.CreatedAt, inc.SourceID)
 	return err
 }
