@@ -38,7 +38,7 @@ func LoadConfig() (*Config, error) {
 			Brokers: strings.Split(os.Getenv("KAFKA_BROKERS"), ","),
 		},
 		Postgres: PostgresConfig{
-			ConnectionString: os.Getenv("POSTGRES_CONNECTION_STRING"),
+			ConnectionString: os.Getenv("DB_CONN"),
 		},
 	}
 
