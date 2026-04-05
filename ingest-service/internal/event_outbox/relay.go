@@ -2,7 +2,7 @@ package event_outbox
 
 import (
 	"context"
-	"log/slog"
+	"log"
 	"time"
 
 	"github.com/sunquan03/ingest-service/internal/brokers"
@@ -14,7 +14,6 @@ type EventOutboxRelay struct {
 	repo     repositories.IEventOutboxRepository
 	producer brokers.Producer
 	cfg      RelayConfig
-	logger   *slog.Logger
 	metrics  Metrics
 }
 
@@ -22,7 +21,6 @@ func NewEventOutboxRelay(
 	repo repositories.IEventOutboxRepository,
 	producer brokers.Producer,
 	cfg RelayConfig,
-	logger *slog.Logger,
 ) *EventOutboxRelay {
 	if cfg.TopicFunc == nil {
 		cfg.TopicFunc = DefaultRelayConfig().TopicFunc
@@ -30,7 +28,7 @@ func NewEventOutboxRelay(
 	if cfg.KeyFunc == nil {
 		cfg.KeyFunc = DefaultRelayConfig().KeyFunc
 	}
-	return &EventOutboxRelay{repo: repo, producer: producer, cfg: cfg, logger: logger}
+	return &EventOutboxRelay{repo: repo, producer: producer, cfg: cfg}
 }
 
 func (r *EventOutboxRelay) WithMetrics(m Metrics) *EventOutboxRelay {
@@ -78,7 +76,7 @@ func (r *EventOutboxRelay) runCycle(ctx context.Context) error {
 }
 
 func (r *EventOutboxRelay) Run(ctx context.Context) error {
-	r.logger.Info("[event_outbox] starting")
+	log.Println("[event_outbox] starting")
 
 	ticker := time.NewTicker(r.cfg.PollInterval)
 	defer ticker.Stop()
@@ -86,7 +84,7 @@ func (r *EventOutboxRelay) Run(ctx context.Context) error {
 	for {
 		select {
 		case <-ctx.Done():
-			r.logger.Info("[event_outbox] stopping")
+			log.Println("[event_outbox] stopping")
 
 			return ctx.Err()
 		case <-ticker.C:

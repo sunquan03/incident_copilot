@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"time"
@@ -10,6 +11,7 @@ import (
 	"github.com/sunquan03/ingest-service/internal/brokers"
 	"github.com/sunquan03/ingest-service/internal/config"
 	"github.com/sunquan03/ingest-service/internal/database"
+	"github.com/sunquan03/ingest-service/internal/event_outbox"
 	"github.com/sunquan03/ingest-service/internal/handlers"
 	"github.com/sunquan03/ingest-service/internal/repositories"
 	"github.com/sunquan03/ingest-service/internal/routers"
@@ -37,6 +39,17 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	eventOutboxRepo := repositories.NewEventOutboxRepository(db)
+	relayCfg := event_outbox.DefaultRelayConfig()
+	relay := event_outbox.NewEventOutboxRelay(eventOutboxRepo, producer, relayCfg)
+
+	go func() {
+		ctx := context.Background()
+		if err := relay.Run(ctx); err != nil && !errors.Is(err, context.Canceled) {
+			log.Fatal(err)
+		}
+	}()
 
 	repository := repositories.NewRepository(db)
 	service := services.NewService(repository, producer)

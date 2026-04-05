@@ -11,8 +11,8 @@ import (
 type IEventOutboxRepository interface {
 	FetchPendingBatch(ctx context.Context, limit int) ([]models.EventOutboxMessage, error)
 	MarkPublished(ctx context.Context, id int64) error
-	ScheduleRetry(ctx context.Context, id int64, retryCount int, retryAt time.Time, err error) error
-	MarkFailed(ctx context.Context, id int64, err error) error
+	ScheduleRetry(ctx context.Context, id int64, retryCount int, retryAt time.Time, errMsg string) error
+	MarkFailed(ctx context.Context, id int64, errMsg string) error
 }
 type EventOutboxRepository struct {
 	db *database.DB

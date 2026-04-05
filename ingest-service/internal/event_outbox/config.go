@@ -30,7 +30,7 @@ func DefaultRelayConfig() RelayConfig {
 		MaxRetries:      5,
 		BaseBackoff:     5 * time.Second,
 		DeleteOnPublish: false,
-		TopicFunc:       func(m models.EventOutboxMessage) string { return m.AggregateType + "." + m.EventType },
+		TopicFunc:       func(m models.EventOutboxMessage) string { return m.EventType },
 		KeyFunc:         func(m models.EventOutboxMessage) string { return m.AggregateID },
 	}
 }
