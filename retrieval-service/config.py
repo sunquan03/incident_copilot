@@ -10,6 +10,8 @@ class Config:
     qdrant_collection: str
     embed_model: str
     embed_batch_size: int
+    service_host: str
+    service_port: int
 
 
 def load_config() -> Config:
@@ -20,4 +22,6 @@ def load_config() -> Config:
         qdrant_collection=os.getenv("QDRANT_COLLECTION", "incident_knowledge"),
         embed_model=os.getenv("EMBED_MODEL", "all-MiniLM-L6-v2"),
         embed_batch_size=int(os.getenv("EMBED_BATCH_SIZE", "32")),
+        service_host=os.getenv("SERVICE_HOST", "0.0.0.0"),
+        service_port=int(os.getenv("SERVICE_PORT", "8035")),
     )

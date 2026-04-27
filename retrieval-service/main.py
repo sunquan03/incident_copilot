@@ -19,3 +19,11 @@ class Question(BaseModel):
 async def retrieve(question: Question):
     res = vectorstore.search(tenant_id=question.tenant_id, question=question.question, top_k=question.top_k)
     return {"chunks": res}
+
+@app.get("/health")
+async def health():
+    return {"status": "ok"}
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host=cfg.service_host, port=cfg.service_port)
