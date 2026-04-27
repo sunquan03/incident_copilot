@@ -12,12 +12,11 @@ vectorstore = VectorStore(cfg, _embedder)
 
 class Question(BaseModel):
     question: str
-    tenant_id: str
     top_k: int | None = 5
 
 @app.post("/retrieve")
 async def retrieve(question: Question):
-    res = vectorstore.search(tenant_id=question.tenant_id, question=question.question, top_k=question.top_k)
+    res = vectorstore.search(question=question.question, top_k=question.top_k)
     return {"chunks": res}
 
 @app.get("/health")
