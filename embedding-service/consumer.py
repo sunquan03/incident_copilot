@@ -27,7 +27,11 @@ def poll(consumer: Consumer, timeout: float = 1.0):
     if msg is None:
         return None, None, None
     if msg.error():
-        if msg.error().code() == KafkaError._PARTITION_EOF:
+        code = msg.error().code()
+        if code == KafkaError._PARTITION_EOF:
+            return None, None, None
+        if code == KafkaError.UNKNOWN_TOPIC_OR_PART:
+            logger.warning("Topic not yet available, waiting: %s", msg.topic())
             return None, None, None
         raise KafkaException(msg.error())
     try:
